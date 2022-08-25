@@ -1,0 +1,12 @@
+[PHP]
+
+; Xdebug
+xdebug.client_host = ${LANDO_HOST_IP}
+xdebug.client_port = 9003
+xdebug.log = /tmp/xdebug.log
+xdebug.max_nesting_level = 256
+xdebug.mode = debug
+xdebug.show_exception_trace = 0
+xdebug.start_with_request = trigger
+;xdebug.idekey = VSCODE
+;xdebug.idekey = PHPSTORM

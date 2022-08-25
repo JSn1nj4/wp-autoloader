@@ -1,0 +1,8 @@
+.idea
+.config/*
+!.config/*-example
+!.config/*-sample
+.vscode/*
+!.vscode/*-example
+!.vscode/*-sample
+.lando.local.yml
