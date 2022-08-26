@@ -3,13 +3,20 @@ recipe: wordpress
 config:
   php: '8.1'
   webroot: wordpress
+proxy:
+  mail:
+    - mail.wp-autoloader.lndo.site
 services:
   appserver:
     xdebug: true
     config:
       php: .config/php.ini
+  mail:
+    type: mailhog
+    hogfrom: appserver
 events:
-#  pre-bootstrap-config:
-#    - /app/.scripts/check-php-ini.sh
+  pre-destroy:
+    - database: /helpers/sql-export.sh /app/.config/mysql-backup.sql
   post-rebuild:
-    - appserver: /app/.scripts/setup-db.sh
+    - database: /app/.scripts/setup-db.sh
+#    - appserver: /app/.scripts/setup-db.sh
