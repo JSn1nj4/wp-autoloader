@@ -1,3 +1,4 @@
+name: wp-autoloader
 recipe: wordpress
 config:
   php: '8.1'
@@ -8,7 +9,7 @@ services:
     config:
       php: .config/php.ini
 events:
-  pre-init:
-    - appserver: /app/.scripts/check-php-ini.sh
+#  pre-bootstrap-config:
+#    - /app/.scripts/check-php-ini.sh
   post-rebuild:
     - appserver: /app/.scripts/setup-db.sh
