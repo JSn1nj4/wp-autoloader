@@ -1,11 +1,11 @@
 name: wp-autoloader
 recipe: wordpress
-config:
-  php: '8.1'
-  webroot: wordpress
 proxy:
   mail:
     - mail.wp-autoloader.lndo.site
+config:
+  php: '8.1'
+  webroot: wordpress
 services:
   appserver:
     xdebug: true
@@ -13,10 +13,5 @@ services:
       php: .config/php.ini
   mail:
     type: mailhog
-    hogfrom: appserver
-events:
-  pre-destroy:
-    - database: /helpers/sql-export.sh /app/.config/mysql-backup.sql
-  post-rebuild:
-    - database: /app/.scripts/setup-db.sh
-#    - appserver: /app/.scripts/setup-db.sh
+    hogfrom:
+      - appserver
