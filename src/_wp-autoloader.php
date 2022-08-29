@@ -9,6 +9,12 @@ class WPAutoloader
     public static array $bad_registrations = [];
 
     /**
+     * track plugin name, namespace, and root collisions
+     * @var array $collisions
+     */
+    public static array $collisions = [];
+
+    /**
      * Namespaces registered by other plugins
      * @var array $namespaces
      */
@@ -30,6 +36,8 @@ class WPAutoloader
     {
         foreach(apply_filters('wp_autoloader_register', []) as $registration) {
             if (self::registrationMalformed($registration)) continue;
+
+            if (self::registrationCollides($registration)) continue;
 
             foreach($registration['mappings'] as $prefix => $path) {
                 self::$namespaces[$prefix] = $path;
@@ -75,6 +83,53 @@ class WPAutoloader
         $path = str_replace('\\', DIRECTORY_SEPARATOR, substr($module, strlen($prefix)));
 
         require "{$baseDir}{$path}.php";
+    }
+
+    /**
+     * Check if a registration collides with an existing one
+     *
+     * Collisions will be logged, including the relevant parts of the registration payload.
+     *
+     * Possible collisions:
+     * - name (future)
+     * - namespace
+     * - path
+     * @param array $registration
+     * @return bool
+     */
+    protected static function registrationCollides(array $registration): bool
+    {
+        $collides = false;
+
+        // @todo: check for name collision
+
+        foreach ($registration['mappings'] as $namespace => $path) {
+            if (array_key_exists($namespace, self::$namespaces)) {
+                self::$collisions[] = [
+                    'type' => 'namespace',
+                    'payload' => [
+                        'name' => $registration['name'],
+                        'mappings' => [$namespace => $path],
+                    ],
+                ];
+
+                $collides = true;
+            }
+
+            if (in_array($path, self::$namespaces)) {
+                self::$collisions[] = [
+                    'type' => 'path',
+                    'payload' => [
+                        'name' => $registration['name'],
+                        'mappings' => [$namespace => $path],
+                    ],
+                ];
+
+                $collides = true;
+            }
+        }
+
+        return $collides;
     }
 
     /**
