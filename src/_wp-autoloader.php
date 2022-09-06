@@ -35,6 +35,7 @@ class WPAutoloader
     
     public function add($namespace, $settings) 
     {
+        $namespace = trim($namespace, '\\/');
         if($this->registrations[$namespace] ?? null) {
             $this->collisions[$namespace] = $settings;
         } else {
