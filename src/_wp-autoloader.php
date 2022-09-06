@@ -33,7 +33,7 @@ class WPAutoloader
         do_action('wpal_loaded', $this);
     }
     
-    public function add($namespace, $settings) 
+    public function add(string $namespace, array $settings): void
     {
         $namespace = trim($namespace, '\\/');
         if($this->registrations[$namespace] ?? null) {
@@ -52,15 +52,19 @@ class WPAutoloader
     {        
         [$namespace, $module] = array_pad(explode('\\', $class), 2, '');
         
-        if($reg = $this->registrations[$namespace]) 
+        if(!$module) {
+            return;
+        }
+        
+        if($reg = $this->registrations[$namespace] ?? null) 
         {
             if($reg['mappings'][$module] ?? null) {
                 require $file = $reg['mappings'][$module];
             }
         
-            $folder = $reg['folder'];
+            $folder = rtrim($reg['folder'], '\\/');
 
-            $file = rtrim($folder, '\\/') . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, substr($class, strlen($namespace)) . '.php';
+            $file = $folder . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, substr($class, strlen($namespace)) . '.php';
             if (is_file($file)) {
                 require $file;
                 return;
