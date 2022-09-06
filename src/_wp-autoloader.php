@@ -53,13 +53,13 @@ class WPAutoloader
         
         if($reg = $this->registrations[$namespace]) 
         {
-            if($reg[$module] ?? null) {
-                require $file = $reg[$module];
+            if($reg['mappings'][$module] ?? null) {
+                require $file = $reg['mappings'][$module];
             }
         
             $folder = $reg['folder'];
 
-            $file = $folder . str_replace('\\', DIRECTORY_SEPARATOR, substr($class, strlen($namespace)) . '.php';
+            $file = rtrim($folder, '\\/') . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, substr($class, strlen($namespace)) . '.php';
             if (is_file($file)) {
                 require $file;
                 return;
